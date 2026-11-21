@@ -1,0 +1,15 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Company logos: readable by all clients for A4 prints & PDFs, writeable by authenticated tenant members
+    match /companies/{companyId}/branding/{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if request.auth != null;
+    }
+
+    // Company private documents & exports
+    match /companies/{companyId}/documents/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
